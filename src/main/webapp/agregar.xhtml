@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<title>Formulario Cliente Nuevo</title>
+	<h:outputStylesheet name="/css/bootstrap.min.css" />
+</h:head>
+<h:body>
+	<h:form id="form" class="form-horizontal">
+		<div class="form-group">
+			<div class="col-sm-4"></div>
+			<div class="col-sm-4">
+				<h2 style="text-align: center">Nuevo Cliente</h2>
+			</div>
+		</div>
+		<hr />
+		<div class="form-group">
+			<h:outputLabel for="nombres" class="control-label col-sm-4">Nombres</h:outputLabel>
+			<div class="col-sm-4">
+				<h:inputText class="form-control" value="#{cliente.nombres}"></h:inputText>
+
+			</div>
+		</div>
+		<div class="form-group">
+			<h:outputLabel for="apellidos" class="control-label col-sm-4">Apellidos</h:outputLabel>
+			<div class="col-sm-4">
+				<h:inputText class="form-control" value="#{cliente.apellidos}"></h:inputText>
+
+			</div>
+		</div>
+		<div class="form-group">
+			<h:outputLabel for="direccion" class="control-label col-sm-4">Direccion</h:outputLabel>
+			<div class="col-sm-4">
+				<h:inputText class="form-control" value="#{cliente.direccion}"></h:inputText>
+
+			</div>
+		</div>
+		<div class="form-group">
+			<h:outputLabel for="telefono" class="control-label col-sm-4">Telefono</h:outputLabel>
+			<div class="col-sm-4">
+				<h:inputText class="form-control" value="#{cliente.telefono}"></h:inputText>
+
+			</div>
+		</div>
+		<div class="form-group">
+			<h:outputLabel for="email" class="control-label col-sm-4">Email</h:outputLabel>
+			<div class="col-sm-4">
+				<h:inputText class="form-control" value="#{cliente.email}"></h:inputText>
+
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-5"></div>
+			<div class="col-sm-5">
+				<div class="col-sm-5">
+					<h:commandButton action="#{clienteBean.guardar(cliente)}"
+						class="btn btn-success" value="Guardar"></h:commandButton>
+				</div>
+			</div>
+		</div>
+	</h:form>
+</h:body>
+</html>
