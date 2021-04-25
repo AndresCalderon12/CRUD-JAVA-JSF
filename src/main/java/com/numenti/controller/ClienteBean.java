@@ -16,6 +16,7 @@ import com.numenti.model.Cliente;
 @RequestScoped
 public class ClienteBean {
 	private ClienteDAO clienteDAO = new ClienteDAO();
+	private String correoActual;
 
 	public String nuevo() {
 		Cliente cliente = new Cliente();
@@ -65,11 +66,15 @@ public class ClienteBean {
 		cliente = clienteDAO.buscar(id);
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("cliente", cliente);
-
+		correoActual = cliente.getEmail();
+		sessionMap.put("correoActual", correoActual);
 		return "/editar.xhtml?faces-redirect=true";
 	}
 
 	public String actualizar(Cliente cliente) {
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+
+		String correoActual = sessionMap.get("correoActual").toString();
 		// guarda la fecha de actualizacion
 		Date fechaActual = new Date();
 		cliente.setFactualizar(new java.sql.Date(fechaActual.getTime()));
@@ -78,7 +83,7 @@ public class ClienteBean {
 		Boolean existeCorreo = false;
 		try {
 			correo = clienteDAO.buscarCorreo(cliente.getEmail());
-			if (correo == 0) {
+			if (correo == 0 || (correoActual.equals(cliente.getEmail()))) {
 				existeCorreo = false;
 				clienteDAO.editar(cliente);
 
