@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -27,9 +28,31 @@ public class ClienteBean {
 		// guarda la fecha de registro
 		Date fechaActual = new Date();
 		cliente.setFregistro(new java.sql.Date(fechaActual.getTime()));
+		FacesContext context = FacesContext.getCurrentInstance();
+		Integer correo;
+		Boolean existeCorreo = false;
+		try {
+			correo = clienteDAO.buscarCorreo(cliente.getEmail());
+			if (correo == 0) {
+				existeCorreo = false;
+				clienteDAO.guardar(cliente);
 
-		clienteDAO.guardar(cliente);
-		return "/index.xhtml?faces-redirect=true";
+			} else {
+				existeCorreo = true;
+				context.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "El correo ingresado ya existe", ""));
+			}
+
+		} catch (Exception e) {
+			context.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ha ocurrido un error creando el cliente", ""));
+		}
+		if (existeCorreo) {
+			return "/agregar.xhtml";
+		} else {
+			return "/index.xhtml?faces-redirect=true";
+		}
+
 	}
 
 	public List<Cliente> obtenerClientes() {
@@ -42,6 +65,7 @@ public class ClienteBean {
 		cliente = clienteDAO.buscar(id);
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("cliente", cliente);
+
 		return "/editar.xhtml?faces-redirect=true";
 	}
 
@@ -49,15 +73,44 @@ public class ClienteBean {
 		// guarda la fecha de actualizacion
 		Date fechaActual = new Date();
 		cliente.setFactualizar(new java.sql.Date(fechaActual.getTime()));
-		clienteDAO.editar(cliente);
-		return "/index.xhtml?faces-redirect=true";
+		FacesContext context = FacesContext.getCurrentInstance();
+		Integer correo;
+		Boolean existeCorreo = false;
+		try {
+			correo = clienteDAO.buscarCorreo(cliente.getEmail());
+			if (correo == 0) {
+				existeCorreo = false;
+				clienteDAO.editar(cliente);
+
+			} else {
+				existeCorreo = true;
+				context.addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "El correo ingresado ya existe", ""));
+			}
+
+		} catch (Exception e) {
+			context.addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ha ocurrido un error creando el cliente", ""));
+		}
+		if (existeCorreo) {
+			return "/editar.xhtml";
+		} else {
+			return "/index.xhtml?faces-redirect=true";
+		}
 	}
 
 	// eliminar un cliente
-	public String eliminar(Long id) {
-		clienteDAO.eliminar(id);
-		System.out.println("Cliente eliminado..");
-		return "/index.xhtml?faces-redirect=true";
+	public void eliminar(Long id) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			clienteDAO.eliminar(id);
+			context.addMessage("MessageId",
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Cliente eliminado correctamente", ""));
+		} catch (Exception e) {
+			context.addMessage("MessageId",
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ha ocurrido un error eliminando el cliente", ""));
+		}
+
 	}
 
 }

@@ -53,4 +53,11 @@ public class ClienteDAO {
 		entity.getTransaction().commit();
 
 	}
+
+	public Integer buscarCorreo(String correo) {
+		String sql = "SELECT COUNT(email) FROM clientes where email=?1";
+		Query query = entity.createNativeQuery(sql);
+		query.setParameter(1, correo);
+		return Integer.valueOf(query.getSingleResult().toString());
+	}
 }
