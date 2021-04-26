@@ -1,4 +1,6 @@
 C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\model\Cliente.java
+C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\utils\Log4jUtil.java
 C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\controller\ClienteBean.java
-C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\DAO\ClienteDAO.java
-C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\model\JPAUtil.java
+C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\utils\JPAUtil.java
+C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\dao\ClienteDAO.java
+C:\Users\ZugeKi\eclipse-workspace\CRUD\src\main\java\com\numenti\enums\TipoLog.java

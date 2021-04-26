@@ -41,13 +41,15 @@ th {
 		</h2>
 	</center>
 
-	<p:messages closable="true" showIcon="false">
-		<p:autoUpdate />
-	</p:messages>
-	<h:form>
-		<h:commandButton action="#{clienteBean.nuevo()}"
+
+	<h:form id="form">
+		<p:messages id="MessageId" for="MessageId" closable="true"
+			showIcon="false">
+			<p:autoUpdate />
+		</p:messages>
+		<p:commandButton action="#{clienteBean.nuevo()}"
 			style="margin-bottom:10px" class="btn btn-success"
-			value="Nuevo Cliente"></h:commandButton>
+			value="Nuevo Cliente"></p:commandButton>
 
 		<h:dataTable value="#{clienteBean.obtenerClientes()}" var="cliente"
 			class="table table-striped table-hover table-bordered" border="1">
@@ -87,13 +89,17 @@ th {
 			<h:column>
 				<f:facet name="header">Editar</f:facet>
 
-				<h:commandButton action="#{clienteBean.editar(cliente.id)}"
-					class="btn btn-primary" value="Editar"></h:commandButton>
+				<p:commandButton action="#{clienteBean.editar(cliente.id)}"
+					class="btn btn-primary" value="Editar"></p:commandButton>
 			</h:column>
 			<h:column>
 				<f:facet name="header">Eliminar</f:facet>
-				<h:commandButton action="#{clienteBean.eliminar(cliente.id)}"
-					class="btn btn-danger" value="Eliminar"></h:commandButton>
+				<p:commandButton action="#{clienteBean.eliminar(cliente.id)}"
+					class="btn btn-danger" value="Eliminar" process=":form"
+					update=":form"
+					onsuccess="setTimeout ( '$(\'#form\\\\:MessageId\').hide()', 2000);">
+
+				</p:commandButton>
 			</h:column>
 		</h:dataTable>
 	</h:form>

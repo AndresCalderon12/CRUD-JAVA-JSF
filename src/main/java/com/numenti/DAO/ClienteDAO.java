@@ -1,13 +1,12 @@
-package com.numenti.DAO;
+package com.numenti.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.numenti.model.Cliente;
-import com.numenti.model.JPAUtil;
+import com.numenti.utils.JPAUtil;
 
 public class ClienteDAO {
 	EntityManager entity = JPAUtil.getEntityManagerFactory().createEntityManager();
@@ -17,7 +16,6 @@ public class ClienteDAO {
 		entity.getTransaction().begin();
 		entity.persist(cliente);
 		entity.getTransaction().commit();
-		// JPAUtil.shutdown();
 	}
 
 	// Editar cliente en BD
@@ -25,29 +23,23 @@ public class ClienteDAO {
 		entity.getTransaction().begin();
 		entity.merge(cliente);
 		entity.getTransaction().commit();
-		// JPAUtil.shutdown();
 	}
 
 	// Buscar Cliente en bd
 	public Cliente buscar(Long Id) {
-		Cliente cliente = new Cliente();
-		cliente = entity.find(Cliente.class, Id);
-		// JPAUtil.shutdown();
-		return cliente;
+		return entity.find(Cliente.class, Id);
 	}
 
 	// obtener todos los clientes
 	public List<Cliente> obtenerClientes() {
-		List<Cliente> listaCliente = new ArrayList<Cliente>();
 		Query query = entity.createQuery("SELECT c FROM Cliente c");
-		listaCliente = query.getResultList();
+		List<Cliente> listaCliente = query.getResultList();
 		return listaCliente;
 	}
 
 	// Eliminar cliente
 	public void eliminar(Long Id) {
-		Cliente cliente = new Cliente();
-		cliente = entity.find(Cliente.class, Id);
+		Cliente cliente = entity.find(Cliente.class, Id);
 		entity.getTransaction().begin();
 		entity.remove(cliente);
 		entity.getTransaction().commit();

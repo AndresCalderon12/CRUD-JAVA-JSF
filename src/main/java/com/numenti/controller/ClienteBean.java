@@ -9,20 +9,28 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
-import com.numenti.DAO.ClienteDAO;
+import com.numenti.dao.ClienteDAO;
+import com.numenti.enums.TipoLog;
 import com.numenti.model.Cliente;
+import com.numenti.utils.Log4jUtil;
 
 @ManagedBean(name = "clienteBean")
 @RequestScoped
 public class ClienteBean {
 	private ClienteDAO clienteDAO = new ClienteDAO();
-	private String correoActual;
+	private String rutaPagina;
+	private static final String RUTAINDEX = "/index.xhtml?faces-redirect=true";
+	private static final String RUTAGREGAR = "/agregar.xhtml?faces-redirect=true";
+	private static final String RUTAAGREGARSINREDIRECT = "agregar.xhtml";
+	private static final String RUTAEDITAR = "/editar.xhtml?faces-redirect=true";
+	private static final String RUTAEDITARSINREDIRECT = "editar.xhtml";
+	private static final String ERRORCREARCLIENTE = "ha ocurrido un error creando el cliente";
 
 	public String nuevo() {
 		Cliente cliente = new Cliente();
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("cliente", cliente);
-		return "/agregar.xhtml?faces-redirect=true";
+		return RUTAGREGAR;
 	}
 
 	public String guardar(Cliente cliente) {
@@ -30,29 +38,25 @@ public class ClienteBean {
 		Date fechaActual = new Date();
 		cliente.setFregistro(new java.sql.Date(fechaActual.getTime()));
 		FacesContext context = FacesContext.getCurrentInstance();
-		Integer correo;
-		Boolean existeCorreo = false;
+		Integer correoExistente;
+		rutaPagina = RUTAAGREGARSINREDIRECT;
 		try {
-			correo = clienteDAO.buscarCorreo(cliente.getEmail());
-			if (correo == 0) {
-				existeCorreo = false;
+			correoExistente = clienteDAO.buscarCorreo(cliente.getEmail());
+			if (correoExistente == 0) {
 				clienteDAO.guardar(cliente);
+				rutaPagina = RUTAINDEX;
 
 			} else {
-				existeCorreo = true;
 				context.addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO, "El correo ingresado ya existe", ""));
 			}
 
 		} catch (Exception e) {
-			context.addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ha ocurrido un error creando el cliente", ""));
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ERRORCREARCLIENTE, ""));
+			Log4jUtil.registrarInfo(getClass(), TipoLog.ERROR, ERRORCREARCLIENTE + e);
 		}
-		if (existeCorreo) {
-			return "/agregar.xhtml";
-		} else {
-			return "/index.xhtml?faces-redirect=true";
-		}
+
+		return rutaPagina;
 
 	}
 
@@ -62,13 +66,12 @@ public class ClienteBean {
 	}
 
 	public String editar(Long id) {
-		Cliente cliente = new Cliente();
-		cliente = clienteDAO.buscar(id);
+		Cliente cliente = clienteDAO.buscar(id);
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("cliente", cliente);
-		correoActual = cliente.getEmail();
+		String correoActual = cliente.getEmail();
 		sessionMap.put("correoActual", correoActual);
-		return "/editar.xhtml?faces-redirect=true";
+		return RUTAEDITAR;
 	}
 
 	public String actualizar(Cliente cliente) {
@@ -80,28 +83,24 @@ public class ClienteBean {
 		cliente.setFactualizar(new java.sql.Date(fechaActual.getTime()));
 		FacesContext context = FacesContext.getCurrentInstance();
 		Integer correo;
-		Boolean existeCorreo = false;
+		rutaPagina = RUTAEDITARSINREDIRECT;
 		try {
 			correo = clienteDAO.buscarCorreo(cliente.getEmail());
 			if (correo == 0 || (correoActual.equals(cliente.getEmail()))) {
-				existeCorreo = false;
 				clienteDAO.editar(cliente);
+				rutaPagina = RUTAINDEX;
 
 			} else {
-				existeCorreo = true;
 				context.addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO, "El correo ingresado ya existe", ""));
 			}
 
 		} catch (Exception e) {
-			context.addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ha ocurrido un error creando el cliente", ""));
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, ERRORCREARCLIENTE, ""));
+			Log4jUtil.registrarInfo(getClass(), TipoLog.ERROR, ERRORCREARCLIENTE + e);
+
 		}
-		if (existeCorreo) {
-			return "/editar.xhtml";
-		} else {
-			return "/index.xhtml?faces-redirect=true";
-		}
+		return rutaPagina;
 	}
 
 	// eliminar un cliente
